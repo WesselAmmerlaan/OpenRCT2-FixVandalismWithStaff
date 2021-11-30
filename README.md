@@ -12,7 +12,7 @@ An OpenRCT2 plug-in that enables you to fix vandalized path additions with selec
 - Select which staff types can do the fixing (to get the most out of them or finally make them more useful (looking at you security guard))
 - Variable repair cost (if you think fixing should be cheaper than replacing or to give yourself a punishment for letting guests become angry in the first place)
 
-![Plug-in window](https://i.imgur.com/AgIVexH.png)
+![Plug-in preview](https://i.imgur.com/Fk9empk.gif) ![Plug-in window](https://i.imgur.com/AgIVexH.png)
 
 ## Installation
 
