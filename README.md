@@ -35,5 +35,7 @@ I tested the plug-in with 200 staff in a regularly sized and filled park with mu
 
 I didn't use a plug-in template, because I didn't expected the file to get this large when I began working on it!
 
+I'm not very involved in the OpenRCT2 community, so share this plug-in where you think it needs sharing (other than the plug-in website).
+
 Have fun!
 
