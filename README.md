@@ -31,7 +31,9 @@ For testing the plug-in I recommend using the [map-tool.js from the plug-in samp
 
 ## Further notes
 
-I didn't use a plug-in template, because I didn't expected the file to get this large when I began working on it.
+I tested the plug-in with 200 staff in a regularly filled park with multi-threading enabled and a Ryzen 5 2600X (my standard configuration) and it did not hinder gameplay at all. I cannot guarantee that it works as well in larger parks or less powerful machines.
+
+I didn't use a plug-in template, because I didn't expected the file to get this large when I began working on it!
 
 Have fun!
 
