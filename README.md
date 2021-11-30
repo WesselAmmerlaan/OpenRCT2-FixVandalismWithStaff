@@ -27,7 +27,7 @@ An OpenRCT2 plug-in that enables you to fix vandalized path additions with selec
 
 The plug-in will start working automatically. To open the manager window, click on "Fix vandalization with staff" in the map menu in the upper toolbar of OpenRCT2. There you can adjust the plug-in to your liking or disable the plug-in's functionality.
 
-For testing the plug-in I recommend using the [map-tool.js from the plug-in samples provided by russellbrewer and IntelOrca](https://github.com/OpenRCT2/plugin-samples) to vandalize your whole park with a few clicks.
+For testing the plug-in I recommend using the [map-tool.js from the plug-in samples](https://github.com/OpenRCT2/plugin-samples) to vandalize your whole park with a few clicks.
 
 ## Further notes
 
