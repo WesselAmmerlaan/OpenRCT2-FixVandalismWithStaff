@@ -1,6 +1,6 @@
 # OpenRCT2 Fix Vandalism With Staff
 
-An OpenRCT2 plug-in that enables you to fix vandalized path additions with selected staff when they walk passed it.
+An OpenRCT2 plug-in that enables you to fix vandalized path additions with selected staff when they walk passed it. Ideal for when you want more convenience than manually replacing vandalized additions but don't want to disable vandalism completely.
 
 ## Acknowledgements
 
