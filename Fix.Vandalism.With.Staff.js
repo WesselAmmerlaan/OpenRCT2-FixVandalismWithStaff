@@ -71,6 +71,28 @@ function showWindow() {
                 function(isChecked) { config.setEntertainersFixVandalism(isChecked); }
             ),
 
+            {
+                type: 'label',
+                x: 5,
+                y: 115,
+                width: 210,
+                height: 10,
+                tooltip: 'Change how much you think a repair should cost. A repair cost of 100% is as much as manually replacing the item yourself.',
+                text: "Repair costs",
+                onChange: function() {},
+            },
+
+            {
+                type: 'dropdown',
+                x: 75,
+                y: 115,
+                width: 100,
+                height: 13,
+                items: repairCostOptions.map(function(v) { return v.s }),
+                selectedIndex: repairCostOptions.map(function(v) { return v.n }).indexOf(config.getRepairCostFactor()),
+                onChange: function(index) { config.setRepairCostFactor(repairCostOptions[index].n); }
+            },
+
         ],
     };
     ui.openWindow(windowDesc);
@@ -160,7 +182,10 @@ function fixVandalismWithSelectedStaff() {
                                     z: sm.z,
                                     object: additions.index,
                                 }, function(_a) {
-                                    // Not possible, most likely No money
+                                    if (_a.cost) {
+                                        park.cash -= _a.cost * config.getRepairCostFactor() - _a.cost;
+                                    }
+
                                 });
                             }
                         }
@@ -211,6 +236,7 @@ const handymenFixVandalism = 'FixVandalismWithStaff.handymenFixVandalism';
 const mechanicsFixVandalism = 'FixVandalismWithStaff.mechanicsFixVandalism';
 const guardsFixVandalism = 'FixVandalismWithStaff.guardsFixVandalism';
 const entertainersFixVandalism = 'FixVandalismWithStaff.entertainersFixVandalism';
+const repairCostFactor = 'FixVandalismWithStaff.repairCostFactor';
 
 // Default configuration values
 const defaults = {
@@ -219,6 +245,7 @@ const defaults = {
     mechanicsFixVandalism: false,
     guardsFixVandalism: false,
     entertainersFixVandalism: false,
+    repairCostFactor: 1.00,
 
 };
 
@@ -269,9 +296,30 @@ const config = {
         return context.sharedStorage.set(entertainersFixVandalism, bool);
     },
 
+    // Repair cost factor
+    getRepairCostFactor() {
+        return context.sharedStorage.get(repairCostFactor, defaults.repairCostFactor);
+    },
+
+    setRepairCostFactor(num) {
+        return context.sharedStorage.set(repairCostFactor, num);
+    }
+
 
 };
-
+// Options to customize the repair cost, from cheaper than base cost to substantially more expensive
+const repairCostOptions = [
+    { s: 'Free', n: 0.00 },
+    { s: '10%', n: 0.10 },
+    { s: '25%', n: 0.25 },
+    { s: '50%', n: 0.50 },
+    { s: '100%', n: 1.00 },
+    { s: '150%', n: 1.50 },
+    { s: '250%', n: 2.50 },
+    { s: '500%', n: 5.00 },
+    { s: '1000%', n: 10.00 },
+    { s: '10000%', n: 100.00 },
+];
 
 // --- Plugin registry ---
 registerPlugin({
