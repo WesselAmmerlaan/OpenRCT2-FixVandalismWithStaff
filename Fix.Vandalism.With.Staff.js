@@ -160,12 +160,7 @@ function fixVandalismWithSelectedStaff() {
                                     z: sm.z,
                                     object: additions.index,
                                 }, function(_a) {
-                                    var errorTitle = _a.errorTitle,
-                                        errorMessage = _a.errorMessage;
-                                    if (errorMessage) {
-                                        console.log(errorTitle + ": " + errorMessage);
-                                        throw new Error(errorTitle + ": " + errorMessage);
-                                    }
+                                    // Not possible, most likely No money
                                 });
                             }
                         }
