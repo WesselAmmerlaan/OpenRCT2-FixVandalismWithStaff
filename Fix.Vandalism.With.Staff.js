@@ -4,7 +4,7 @@ var tickCounter = 0; // Used to only check for vandalism every n ticks
 
 // --- Main functions ---
 var main = function() {
-    ui.registerMenuItem("Fix vandalism with staff", function () {
+    ui.registerMenuItem("Fix vandalism with staff", function() {
         showWindow();
     });
 
@@ -19,95 +19,74 @@ function showWindow() {
         window.bringToFront();
         return;
     }
-  
+
     const windowDesc = {
-      classification: 'staff_fix_vandalism_management',
-      width: 210,
-      height: 140,
-      title: 'Fix Vandalism With Staff Manager',
-      widgets: [
-        makeCheckboxWidget (
-            20,
-            210,
-            "Have selected staff fix vandalized path additions in your park when walking past it for a fixed cost",
-            "Fix vandalism using selected staff",
-            config.getPluginEnabled(),
-            function(isChecked){subscribeToStaffFixesVandalism(isChecked);}
-        ),
+        classification: 'staff_fix_vandalism_management',
+        width: 210,
+        height: 140,
+        title: 'Fix Vandalism With Staff Manager',
+        widgets: [
+            makeCheckboxWidget(
+                20,
+                210,
+                "Have selected staff fix vandalized path additions in your park when walking past it for a fixed cost",
+                "Fix vandalism using selected staff",
+                config.getPluginEnabled(),
+                function(isChecked) { subscribeToStaffFixesVandalism(isChecked); }
+            ),
 
-        makeCheckboxWidget(
-            45,
-            100,
-            "Have handymen fix vandalized path additions, because that's most logical by definition", 
-            "Handymen", 
-            config.getHandymenFixVandalism(), 
-            function(isChecked){config.setHandymenFixVandalism(isChecked);}
-        ),
+            makeCheckboxWidget(
+                45,
+                100,
+                "Have handymen fix vandalized path additions, because that's most logical by definition",
+                "Handymen",
+                config.getHandymenFixVandalism(),
+                function(isChecked) { config.setHandymenFixVandalism(isChecked); }
+            ),
 
-        makeCheckboxWidget(
-            60,
-            100,
-            "Have mechanics fix vandalized path additions, because they're the ones that do the fixing",
-            "Mechanics", 
-            config.getMechanicsFixVandalism(), 
-            function(isChecked){config.setMechanicsFixVandalism(isChecked);}
-        ),
+            makeCheckboxWidget(
+                60,
+                100,
+                "Have mechanics fix vandalized path additions, because they're the ones that do the fixing",
+                "Mechanics",
+                config.getMechanicsFixVandalism(),
+                function(isChecked) { config.setMechanicsFixVandalism(isChecked); }
+            ),
 
-        makeCheckboxWidget(
-            75,
-            100,
-            "Have guards fix vandalized path additions, because they didn't do their job well enough or make them useful for once", 
-            "Security Guards", 
-            config.getGuardsFixVandalism(), 
-            function(isChecked){config.setGuardsFixVandalism(isChecked);}
-        ),
+            makeCheckboxWidget(
+                75,
+                100,
+                "Have guards fix vandalized path additions, because they didn't do their job well enough or make them useful for once",
+                "Security Guards",
+                config.getGuardsFixVandalism(),
+                function(isChecked) { config.setGuardsFixVandalism(isChecked); }
+            ),
 
-        makeCheckboxWidget(
-            90,
-            100,
-            "Have entertainers fix vandalized path additions, because why not?", 
-            "Entertainers", 
-            config.getEntertainersFixVandalism(), 
-            function(isChecked){config.setEntertainersFixVandalism(isChecked);}
-        ),
-        
-        {
-            type: 'label',
-            x: 5,
-            y: 115,
-            width: 210,
-            height: 10,
-            tooltip: 'Change how much you think a repair should cost. A repair cost of 100% is as much as manually replacing the item yourself.',
-            text: "Repair costs",
-            onChange: function() {},
-        },
+            makeCheckboxWidget(
+                90,
+                100,
+                "Have entertainers fix vandalized path additions, because why not?",
+                "Entertainers",
+                config.getEntertainersFixVandalism(),
+                function(isChecked) { config.setEntertainersFixVandalism(isChecked); }
+            ),
 
-        {
-            type: 'dropdown',
-            x: 75,
-            y: 115,
-            width: 100,
-            height: 13,
-            items: repairCostOptions.map(function(v){return v.s}),
-            selectedIndex: repairCostOptions.map(function(v){return v.n}).indexOf(config.getRepairCostFactor()),
-            onChange: function(index) {config.setRepairCostFactor(repairCostOptions[index].n);}
-        },
-      ],
+        ],
     };
     ui.openWindow(windowDesc);
 }
 
 function makeCheckboxWidget(y, width, tooltip, text, isChecked, onChange) {
     return {
-      type: 'checkbox',
-      x: 5,
-      y,
-      width,
-      height: 10,
-      tooltip,
-      text,
-      isChecked,
-      onChange,
+        type: 'checkbox',
+        x: 5,
+        y,
+        width,
+        height: 10,
+        tooltip,
+        text,
+        isChecked,
+        onChange,
     };
 }
 
@@ -122,7 +101,7 @@ function subscribeToStaffFixesVandalism(bool) {
             function() {
                 fixVandalismWithSelectedStaff()
             }
-        );   
+        );
     } else {
         // When false, the staff will stop fixing vandalized additions
         if (staffFixesVandalismSubscription) {
@@ -138,7 +117,7 @@ function fixVandalismWithSelectedStaff() {
     // Handymen with a walking speed of about 1 tile every second was used as baseline
     // So practically staff checks every tile they walk on while moving at least twice
     // RCT2 runs on 40 ticks per second, so execute once every 20 ticks
-    tickCounter = (tickCounter+1) % 20; 
+    tickCounter = (tickCounter + 1) % 20;
     if (tickCounter === 0) {
         // Get a list of all staff members
         var allStaff = map.getAllEntities('staff');
@@ -147,13 +126,13 @@ function fixVandalismWithSelectedStaff() {
         for (var staffNum = 0; staffNum < allStaff.length; staffNum++) {
             // Get corresponding staff member
             var sm = allStaff[staffNum];
-            
+
             // If the staff member type is assigned to fix vandalization
             if (staffTypeIncluded(sm.staffType)) {
                 // Get the tile the staff member is walking on 
                 // Divide by 32 to convert the location to a tile coordinate
-                var smTile = map.getTile(sm.x/32, sm.y/32);
-                
+                var smTile = map.getTile(sm.x / 32, sm.y / 32);
+
                 // Iterate every element on the tile
                 for (var elemNum = 0; elemNum < smTile.numElements; elemNum++) {
                     var element = smTile.getElement(elemNum);
@@ -167,24 +146,28 @@ function fixVandalismWithSelectedStaff() {
                             // Repair the addition for free if playing without money
                             if (park.getFlag("noMoney")) {
                                 element.isAdditionBroken = false;
-                            } 
-                            
+                            }
+
                             // Else only fix if there is enough money in the bank
                             else {
                                 // Find out what type of object is to be repaired
-                                var additionIdentifier = context.getObject("footpath_addition", element.addition).identifier;
-                                
-                                // Repair costs are the building costs of that specific object times the repair cost factor
-                                var repairCost = additionCosts[additionIdentifier] * config.getRepairCostFactor();
-                                
-                                // If the park has more money than the repairs cost
-                                if (park.cash > repairCost) {
+                                var additions = context.getObject("footpath_addition", element.addition);
 
-                                    // Repair the element and deduct the repair costs
-                                    element.isAdditionBroken = false;
-                                    park.cash -= repairCost
-                                }
-                            } 
+                                context.executeAction("footpathadditionplace", {
+                                    // x/y coords need to be multiples of 32
+                                    x: smTile.x * 32,
+                                    y: smTile.y * 32,
+                                    z: sm.z,
+                                    object: additions.index,
+                                }, function(_a) {
+                                    var errorTitle = _a.errorTitle,
+                                        errorMessage = _a.errorMessage;
+                                    if (errorMessage) {
+                                        console.log(errorTitle + ": " + errorMessage);
+                                        throw new Error(errorTitle + ": " + errorMessage);
+                                    }
+                                });
+                            }
                         }
 
                         // No need to look for more footpaths if the one being walked on is found
@@ -206,7 +189,7 @@ function staffTypeIncluded(staffType) {
         case "handyman":
             included = config.getHandymenFixVandalism();
             break;
-        
+
         case "mechanic":
             included = config.getMechanicsFixVandalism();
             break;
@@ -233,7 +216,6 @@ const handymenFixVandalism = 'FixVandalismWithStaff.handymenFixVandalism';
 const mechanicsFixVandalism = 'FixVandalismWithStaff.mechanicsFixVandalism';
 const guardsFixVandalism = 'FixVandalismWithStaff.guardsFixVandalism';
 const entertainersFixVandalism = 'FixVandalismWithStaff.entertainersFixVandalism';
-const repairCostFactor = 'FixVandalismWithStaff.repairCostFactor';
 
 // Default configuration values
 const defaults = {
@@ -242,7 +224,7 @@ const defaults = {
     mechanicsFixVandalism: false,
     guardsFixVandalism: false,
     entertainersFixVandalism: false,
-    repairCostFactor: 1.00,
+
 };
 
 // For interacting with the sharedStorage
@@ -292,55 +274,9 @@ const config = {
         return context.sharedStorage.set(entertainersFixVandalism, bool);
     },
 
-    // Repair cost factor
-    getRepairCostFactor() {
-        return context.sharedStorage.get(repairCostFactor, defaults.repairCostFactor);
-    },
 
-    setRepairCostFactor(num) {
-        return context.sharedStorage.set(repairCostFactor, num);
-    }
 };
 
-// Cost of specific additions, obtained manually from the object JSON files
-// (Couldn't find a way to read those out via the API)
-const additionCosts = {
-    'official.litterpa': 40,
-    'rct2.bench1': 50,
-    'rct2.benchlog': 50,
-    'rct2.benchpl': 50,
-    'rct2.benchspc': 50,
-    'rct2.benchstn': 50,
-    'rct2.jumpfnt1': 200,
-    'rct2.jumpsnw1': 250,
-    'rct2.lamp1': 40,
-    'rct2.lamp2': 50,
-    'rct2.lamp3': 60,
-    'rct2.lamp4': 60,
-    'rct2.lampdsy': 60,
-    'rct2.lamppir': 60,
-    'rct2.litter1': 30,
-    'rct2.littermn': 40,
-    'rct2.littersp': 40,
-    'rct2.litterww': 40,
-    'rct2.qtv1': 150,
-    'rct2.tt.firhydrt': 40,
-    'rct2.tt.medbench': 50,
-}
-
-// Options to customize the repair cost, from cheaper than base cost to substantially more expensive
-const repairCostOptions = [
-    {s: 'Free', n: 0.00},
-    {s: '10%', n: 0.10},
-    {s: '25%', n: 0.25},
-    {s: '50%', n: 0.50},
-    {s: '100%', n: 1.00},
-    {s: '150%', n: 1.50},
-    {s: '250%', n: 2.50},
-    {s: '500%', n: 5.00},
-    {s: '1000%', n: 10.00},
-    {s: '10000%', n: 100.00},
-];
 
 // --- Plugin registry ---
 registerPlugin({
