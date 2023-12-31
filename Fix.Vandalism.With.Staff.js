@@ -4,11 +4,13 @@ var tickCounter = 0; // Used to only check for vandalism every n ticks
 
 // --- Main functions ---
 var main = function() {
-    ui.registerMenuItem("Fix vandalism with staff", function () {
-        showWindow();
-    });
+    if (network.mode !== "client") {
+        ui.registerMenuItem("Fix vandalism with staff", function () {
+            showWindow();
+        });
 
-    subscribeToStaffFixesVandalism(config.getPluginEnabled());
+        subscribeToStaffFixesVandalism(config.getPluginEnabled());
+    }
 };
 
 function showWindow() {
@@ -161,30 +163,31 @@ function fixVandalismWithSelectedStaff() {
                     // If the element is a footpath on the same height as the staff member
                     if (element.type === 'footpath' && element.baseZ === sm.z) {
 
-                        // If the addition has been vandalized
-                        if (element.isAdditionBroken) {
+                        // If the addition has been vandalized, and at least 1 edge isn't connected (addition is visible)
+                        if (element.isAdditionBroken && element.edges !== 15) {
 
                             // Repair the addition for free if playing without money
                             if (park.getFlag("noMoney")) {
                                 element.isAdditionBroken = false;
-                            } 
-                            
-                            // Else only fix if there is enough money in the bank
-                            else {
-                                // Find out what type of object is to be repaired
-                                var additionIdentifier = context.getObject("footpath_addition", element.addition).identifier;
-                                
-                                // Repair costs are the building costs of that specific object times the repair cost factor
-                                var repairCost = additionCosts[additionIdentifier] * config.getRepairCostFactor();
-                                
-                                // If the park has more money than the repairs cost
-                                if (park.cash > repairCost) {
+                            }
 
-                                    // Repair the element and deduct the repair costs
-                                    element.isAdditionBroken = false;
-                                    park.cash -= repairCost
-                                }
-                            } 
+                            else {
+                                // Repair the element and deduct the repair costs
+                                context.executeAction(
+                                    "footpathadditionplace",
+                                    {
+                                        x: smTile.x * 32,
+                                        y: smTile.y * 32,
+                                        z: sm.z,
+                                        object: context.getObject("footpath_addition", element.addition).index,
+                                    },
+                                    function(_a) {
+                                        if (_a.cost) {
+                                            park.cash -= _a.cost * config.getRepairCostFactor() - _a.cost;
+                                        }
+                                    }
+                                );
+                            }
                         }
 
                         // No need to look for more footpaths if the one being walked on is found
@@ -302,32 +305,6 @@ const config = {
     }
 };
 
-// Cost of specific additions, obtained manually from the object JSON files
-// (Couldn't find a way to read those out via the API)
-const additionCosts = {
-    'official.litterpa': 40,
-    'rct2.bench1': 50,
-    'rct2.benchlog': 50,
-    'rct2.benchpl': 50,
-    'rct2.benchspc': 50,
-    'rct2.benchstn': 50,
-    'rct2.jumpfnt1': 200,
-    'rct2.jumpsnw1': 250,
-    'rct2.lamp1': 40,
-    'rct2.lamp2': 50,
-    'rct2.lamp3': 60,
-    'rct2.lamp4': 60,
-    'rct2.lampdsy': 60,
-    'rct2.lamppir': 60,
-    'rct2.litter1': 30,
-    'rct2.littermn': 40,
-    'rct2.littersp': 40,
-    'rct2.litterww': 40,
-    'rct2.qtv1': 150,
-    'rct2.tt.firhydrt': 40,
-    'rct2.tt.medbench': 50,
-}
-
 // Options to customize the repair cost, from cheaper than base cost to substantially more expensive
 const repairCostOptions = [
     {s: 'Free', n: 0.00},
@@ -345,8 +322,8 @@ const repairCostOptions = [
 // --- Plugin registry ---
 registerPlugin({
     name: 'Fix vandalism with staff',
-    version: '1.0',
-    authors: ['Wessel Ammerlaan'],
+    version: '1.1',
+    authors: ['Wessel Ammerlaan', 'PhasecoreX'],
     type: 'remote',
     licence: 'MIT',
     main: main
